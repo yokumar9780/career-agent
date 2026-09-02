@@ -1,0 +1,85 @@
+# =============================================================================
+# Career Agent — Root .gitignore
+# =============================================================================
+
+# --- Environment & Secrets ---
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# --- Java / Maven (career-agent-service) ---
+**/target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+hs_err_pid*
+replay_pid*
+
+# --- Node.js / pnpm (career-agent-ui, browser-automation-service) ---
+**/node_modules/
+**/.pnp
+**/.pnp.*
+**/.yarn/*
+!**/.yarn/patches
+!**/.yarn/plugins
+!**/.yarn/releases
+!**/.yarn/versions
+
+# --- Next.js ---
+**/.next/
+**/out/
+**/build/
+*.tsbuildinfo
+next-env.d.ts
+
+# --- Playwright ---
+**/test-results/
+**/playwright-report/
+**/blob-report/
+**/playwright/.cache/
+
+# --- Docker ---
+pgdata/
+
+# --- Document Storage ---
+documents/
+
+# --- IDE ---
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
+.settings/
+*.swp
+*.swo
+*~
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# --- Local Dev Scripts ---
+.pids/
+
+# --- Test & Coverage ---
+**/coverage/
+**/*.lcov
+**/.nyc_output/
+
+# --- Debug Logs ---
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# --- Misc ---
+*.pem
+.vercel

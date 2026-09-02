@@ -1,0 +1,2 @@
+-- Initial schema placeholder
+-- Tables will be added in subsequent migrations as features are implemented.

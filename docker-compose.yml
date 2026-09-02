@@ -1,0 +1,63 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: career-agent-postgres
+    environment:
+      POSTGRES_DB: career_agent
+      POSTGRES_USER: career_agent
+      POSTGRES_PASSWORD: career_agent
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U career_agent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  career-agent-service:
+    build: ./career-agent-service
+    container_name: career-agent-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    ports:
+      - "8080:8080"
+    env_file: .env
+    volumes:
+      - ./documents:/app/documents
+
+  career-agent-ui:
+    build: ./career-agent-ui
+    container_name: career-agent-ui
+    depends_on:
+      career-agent-service:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://career-agent-service:8080
+
+  browser-automation-service:
+    build: ./browser-automation-service
+    container_name: browser-automation-service
+    depends_on:
+      career-agent-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    ports:
+      - "4000:4000"
+
+volumes:
+  pgdata:
