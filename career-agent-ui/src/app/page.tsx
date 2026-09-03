@@ -1,17 +1,62 @@
 "use client";
 
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import CircularProgress from "@mui/material/CircularProgress";
+import Container from "@mui/material/Container";
+import Divider from "@mui/material/Divider";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ErrorIcon from "@mui/icons-material/Error";
 import { useHealthCheck } from "@/hooks/useHealthCheck";
 
-function StatusDot({ status }: { status: "UP" | "DOWN" | "LOADING" }) {
+function StatusChip({
+  label,
+  status,
+}: {
+  label: string;
+  status: "UP" | "DOWN" | "LOADING";
+}) {
   if (status === "LOADING") {
     return (
-      <span className="inline-block h-3 w-3 rounded-full bg-yellow-400 animate-pulse" />
+      <Stack
+        direction="row"
+        sx={{ alignItems: "center", justifyContent: "space-between" }}
+      >
+        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+          {label}
+        </Typography>
+        <Chip
+          icon={<CircularProgress size={14} />}
+          label="Checking…"
+          size="small"
+          color="warning"
+          variant="outlined"
+        />
+      </Stack>
     );
   }
-  if (status === "UP") {
-    return <span className="inline-block h-3 w-3 rounded-full bg-green-500" />;
-  }
-  return <span className="inline-block h-3 w-3 rounded-full bg-red-500" />;
+
+  return (
+    <Stack
+      direction="row"
+      sx={{ alignItems: "center", justifyContent: "space-between" }}
+    >
+      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+        {label}
+      </Typography>
+      <Chip
+        icon={status === "UP" ? <CheckCircleIcon /> : <ErrorIcon />}
+        label={status}
+        size="small"
+        color={status === "UP" ? "success" : "error"}
+        variant="filled"
+      />
+    </Stack>
+  );
 }
 
 function formatTimestamp(date: Date | null): string {
@@ -24,69 +69,62 @@ export default function Home() {
     useHealthCheck();
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-8 p-6">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold tracking-tight">Career Agent</h1>
-        <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400">
-          AI-powered job search assistant
-        </p>
-      </div>
+    <Container maxWidth="sm">
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 4,
+          py: 6,
+        }}
+      >
+        <Box sx={{ textAlign: "center" }}>
+          <Typography variant="h3" component="h1" sx={{ fontWeight: 700 }}>
+            Career Agent
+          </Typography>
+          <Typography
+            variant="h6"
+            color="text.secondary"
+            sx={{ mt: 1, fontWeight: 400 }}
+          >
+            AI-powered job search assistant
+          </Typography>
+        </Box>
 
-      <div className="w-full max-w-md rounded-lg border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-          System Status
-        </h2>
-
-        <div className="space-y-3">
-          {/* Backend API */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <StatusDot status={backendStatus} />
-              <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
-                Backend API
-              </span>
-            </div>
-            <span
-              className={`text-sm font-medium ${
-                backendStatus === "UP"
-                  ? "text-green-600 dark:text-green-400"
-                  : backendStatus === "DOWN"
-                    ? "text-red-600 dark:text-red-400"
-                    : "text-yellow-600 dark:text-yellow-400"
-              }`}
+        <Card sx={{ width: "100%" }}>
+          <CardContent>
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              gutterBottom
+              sx={{ display: "block", mb: 2 }}
             >
-              {isLoading ? "Checking…" : backendStatus}
-            </span>
-          </div>
+              System Status
+            </Typography>
 
-          {/* Backend detail (error message) */}
-          {backendStatus === "DOWN" && backendDetail && (
-            <p className="ml-5 text-xs text-red-500 dark:text-red-400">
-              {backendDetail}
-            </p>
-          )}
+            <Stack spacing={2}>
+              <StatusChip label="Backend API" status={backendStatus} />
 
-          {/* Frontend */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <StatusDot status="UP" />
-              <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
-                Frontend
-              </span>
-            </div>
-            <span className="text-sm font-medium text-green-600 dark:text-green-400">
-              UP
-            </span>
-          </div>
+              {backendStatus === "DOWN" && backendDetail && (
+                <Typography variant="caption" color="error" sx={{ pl: 1 }}>
+                  {backendDetail}
+                </Typography>
+              )}
 
-          {/* Last checked */}
-          <div className="mt-2 border-t border-zinc-100 pt-3 dark:border-zinc-800">
-            <p className="text-xs text-zinc-400 dark:text-zinc-500">
-              Last checked: {formatTimestamp(lastChecked)}
-            </p>
-          </div>
-        </div>
-      </div>
-    </main>
+              <StatusChip label="Frontend" status="UP" />
+
+              <Divider />
+
+              <Typography variant="caption" color="text.disabled">
+                Last checked: {formatTimestamp(lastChecked)}
+              </Typography>
+            </Stack>
+          </CardContent>
+        </Card>
+      </Box>
+    </Container>
   );
 }
