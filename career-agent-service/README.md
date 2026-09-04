@@ -15,13 +15,14 @@ Spring Boot backend for the Career Agent — an AI-powered job search assistant 
 | PostgreSQL | 17 | Relational database |
 | Qdrant | 1.14 | Vector similarity search |
 | jjwt | 0.12.6 | JWT token generation/validation |
+| MinIO | 8.6.0 SDK | S3-compatible object storage (documents, CVs) |
 | springdoc-openapi | 3.0.1 | API documentation (Swagger UI) |
 
 ## Prerequisites
 
 - Java 25 (JDK)
 - Maven 3.9+
-- Docker (for PostgreSQL and Qdrant)
+- Docker (for PostgreSQL, MinIO, and Qdrant)
 
 ## Getting Started
 
@@ -29,7 +30,7 @@ Spring Boot backend for the Career Agent — an AI-powered job search assistant 
 
 ```bash
 # From the project root (parent of this directory)
-docker compose up -d postgres
+docker compose up -d postgres minio
 ```
 
 ### 2. Run the service
@@ -92,8 +93,14 @@ src/main/java/com/careeragent/
 │   ├── okf/                        # OKF knowledge bundle writers
 │   ├── email/                      # IMAP email listener
 │   ├── browser/                    # Browser automation client
+│   ├── storage/                    # MinIO object storage (ObjectStorageService interface)
 │   └── session/                    # Portal session encryption
 ├── service/                        # Business logic services
+│   ├── AuthService.java
+│   ├── ProfileService.java
+│   ├── DocumentService.java
+│   ├── ValidationService.java
+│   └── TextExtractionService.java
 ├── agent/                          # AI agents (profile, matching, etc.)
 ├── workflow/                       # Workflow engine
 ├── scheduler/                      # Scheduled tasks
@@ -104,7 +111,10 @@ src/main/resources/
 ├── application-dev.yml             # Dev profile (verbose logging)
 ├── db/migration/                   # Flyway SQL migrations
 │   ├── V1__init.sql
-│   └── V2__candidate_profile.sql
+│   ├── V2__candidate_profile.sql
+│   ├── V3__candidate_preference_and_document.sql
+│   ├── V4__fix_content_type_length.sql
+│   └── V5__multi_value_remote_and_seniority.sql
 └── prompts/                        # AI agent system prompts (OKF format)
 ```
 
@@ -125,6 +135,10 @@ Key variables:
 | `JWT_EXPIRATION_MS` | `86400000` | Token expiry (24h) |
 | `OPENAI_API_KEY` | (placeholder) | OpenAI API key |
 | `CORS_ALLOWED_ORIGINS` | `http://localhost:3000` | Allowed frontend origins |
+| `MINIO_ENDPOINT` | `http://localhost:9000` | MinIO API endpoint |
+| `MINIO_ACCESS_KEY` | `minioadmin` | MinIO access key |
+| `MINIO_SECRET_KEY` | `minioadmin` | MinIO secret key |
+| `MINIO_BUCKET_NAME` | `career-agent-documents` | Storage bucket name |
 | `QDRANT_HOST` | `localhost` | Qdrant host |
 | `QDRANT_GRPC_PORT` | `6334` | Qdrant gRPC port |
 

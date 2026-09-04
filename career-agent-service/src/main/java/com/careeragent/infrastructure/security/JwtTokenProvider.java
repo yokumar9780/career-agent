@@ -13,6 +13,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * Generates, validates, and parses JWT tokens for candidate authentication.
+ */
 @Component
 public class JwtTokenProvider {
 
@@ -27,6 +30,9 @@ public class JwtTokenProvider {
         this.expirationMs = expirationMs;
     }
 
+    /**
+     * Generates a signed JWT token containing the candidate ID and email.
+     */
     public String generateToken(UUID candidateId, String email) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expirationMs);
@@ -40,6 +46,9 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    /**
+     * Validates the token signature and expiration.
+     */
     public boolean validateToken(String token) {
         try {
             Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
@@ -49,16 +58,25 @@ public class JwtTokenProvider {
         }
     }
 
+    /**
+     * Extracts the candidate UUID from the token subject claim.
+     */
     public UUID getCandidateId(String token) {
         Claims claims = parseClaims(token);
         return UUID.fromString(claims.getSubject());
     }
 
+    /**
+     * Extracts the email from the token claims.
+     */
     public String getEmail(String token) {
         Claims claims = parseClaims(token);
         return claims.get("email", String.class);
     }
 
+    /**
+     * Parses and returns the claims payload from a signed JWT token.
+     */
     private Claims parseClaims(String token) {
         return Jwts.parser()
                 .verifyWith(key)

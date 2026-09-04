@@ -16,11 +16,31 @@ services:
     ports:
       - "5432:5432"
 
+  minio:
+    image: minio/minio:latest
+    container_name: career-agent-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+
   career-agent-service:
     build: ./career-agent-service
     container_name: career-agent-service
     depends_on:
       postgres:
+        condition: service_healthy
+      minio:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
@@ -31,8 +51,6 @@ services:
     ports:
       - "8080:8080"
     env_file: .env
-    volumes:
-      - ./documents:/app/documents
 
   career-agent-ui:
     build: ./career-agent-ui
@@ -61,3 +79,4 @@ services:
 
 volumes:
   pgdata:
+  minio_data:

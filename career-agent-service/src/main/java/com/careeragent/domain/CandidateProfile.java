@@ -6,6 +6,9 @@ import lombok.*;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * Represents a candidate's profile with personal info and agent configuration.
+ */
 @Entity
 @Table(name = "candidate_profile")
 @Getter

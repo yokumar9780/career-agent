@@ -21,6 +21,7 @@ career-agent/
 | Frontend | 3000 | Next.js 16, React 19, MUI 9 |
 | PostgreSQL | 5432 | v17 (relational data) |
 | Qdrant | 6333/6334 | v1.14 (vector embeddings) |
+| MinIO | 9000/9001 | Object storage (documents, CVs) |
 | Browser Automation | 4000 | Express + Playwright (planned) |
 
 ## Quick Start
@@ -42,7 +43,7 @@ cp .env.example .env
 
 ```bash
 # Start infrastructure
-docker compose up -d postgres
+docker compose up -d postgres minio
 
 # Start backend
 cd career-agent-service && mvn spring-boot:run &
@@ -62,6 +63,7 @@ Or use the startup script:
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8080
 - Swagger UI: http://localhost:8080/swagger-ui.html
+- MinIO Console: http://localhost:9001 (minioadmin/minioadmin)
 - Health: http://localhost:8080/actuator/health
 
 ## Implementation Guide

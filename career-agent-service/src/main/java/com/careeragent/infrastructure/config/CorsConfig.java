@@ -10,6 +10,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Configures CORS settings for cross-origin requests from the frontend.
+ */
 @Configuration
 public class CorsConfig {
 
@@ -22,6 +25,9 @@ public class CorsConfig {
     @Value("${cors.allowed-headers:Authorization,Content-Type,X-Correlation-ID}")
     private String allowedHeaders;
 
+    /**
+     * Creates the CORS configuration source with allowed origins, methods, and headers.
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

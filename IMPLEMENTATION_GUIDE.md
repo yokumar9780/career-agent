@@ -18,7 +18,8 @@ Every section includes the Git branch name where that work lives, so you can che
 - **Backend application** (career-agent-service) — A Java/Spring Boot server that will handle all the business logic, AI agents, and data storage. At this stage, it just starts up and reports "I'm healthy."
 - **Frontend application** (career-agent-ui) — A Next.js web application that users will interact with through their browser. At this stage, it shows a simple landing page.
 - **Database** — A PostgreSQL database running in Docker, ready to store candidate profiles, jobs, and applications.
-- **Docker Compose** — A configuration file that starts all infrastructure services (database, etc.) with a single command.
+- **MinIO** — An S3-compatible object storage service running in Docker, used for storing documents and CVs.
+- **Docker Compose** — A configuration file that starts all infrastructure services (database, MinIO, etc.) with a single command.
 - **Health check connection** — The frontend calls the backend's health endpoint and displays whether the backend is running (green "UP") or not (red "DOWN").
 
 **How to test it:** Start everything up, open `http://localhost:3000` in your browser, and you should see a page showing "Career Agent" with the backend status displayed as "UP" with a green indicator.
@@ -56,8 +57,8 @@ Every section includes the Git branch name where that work lives, so you can che
 
 **What gets built:**
 - **Profile creation** — Upload your CV (PDF or Word), and the system extracts your professional information automatically using AI.
-- **Preference management** — Set your target job titles, preferred locations, remote/hybrid preference, minimum salary, preferred industries, target companies, seniority level, and exclusions.
-- **Document management** — Upload, replace, and delete CV documents (up to 5 per profile).
+- **Preference management** — Set your target job titles, preferred locations, remote preferences (multi-select: Remote, Hybrid, On-site, Any), minimum salary, preferred industries, target companies, seniority levels (multi-select: Intern through Executive), and exclusions. All multi-value fields offer predefined suggestions with checkbox selection plus custom free-text entries.
+- **Document management** — Upload, replace, and delete CV documents stored in MinIO object storage (up to 5 per profile).
 - **Profile editing** — Review and edit everything the AI extracted. All changes are saved and used for future matching.
 - **Validation** — Salary must be positive, seniority must be from a defined list, locations can't be empty. All inputs are sanitized to prevent security issues.
 - **Vector embedding** — Your profile is converted into a mathematical representation (embedding) and stored in the Qdrant vector database, enabling semantic similarity search later.
