@@ -64,6 +64,10 @@ Or use the startup script:
 - Swagger UI: http://localhost:8080/swagger-ui.html
 - Health: http://localhost:8080/actuator/health
 
+## Implementation Guide
+
+For a detailed step-by-step walkthrough of what we're building and why, see the **[Implementation Guide](./IMPLEMENTATION_GUIDE.md)**. It explains each milestone in non-technical language with Git branch references.
+
 ## Development
 
 See individual project READMEs:
