@@ -66,9 +66,10 @@ Or use the startup script:
 - MinIO Console: http://localhost:9001 (minioadmin/minioadmin)
 - Health: http://localhost:8080/actuator/health
 
-## Implementation Guide
+## Documentation
 
-For a detailed step-by-step walkthrough of what we're building and why, see the **[Implementation Guide](./IMPLEMENTATION_GUIDE.md)**. It explains each milestone in non-technical language with Git branch references.
+- **[Implementation Guide](./IMPLEMENTATION_GUIDE.md)** — Step-by-step walkthrough of what we're building and why, with Git branch references.
+- **[Architecture Decision Records](./ARCHITECTURE_DECISIONS.md)** — Key architectural decisions with context, alternatives considered, and rationale (e.g., why email ingestion over LinkedIn API, why browser automation for auto-apply, why Qdrant over pgvector).
 
 ## Development
 

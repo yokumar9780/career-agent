@@ -4,6 +4,8 @@ This document walks through the Career Agent project step by step, explaining wh
 
 Every section includes the Git branch name where that work lives, so you can check out any branch to see the project at that stage.
 
+For the reasoning behind key architectural choices (why email over LinkedIn API, why browser automation for auto-apply, why Qdrant over pgvector, etc.), see the **[Architecture Decision Records](./ARCHITECTURE_DECISIONS.md)**.
+
 ---
 
 ## Step 1: Project Foundation
