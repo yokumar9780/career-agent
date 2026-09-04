@@ -1,36 +1,123 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Career Agent UI
+
+Next.js frontend for the Career Agent — an AI-powered job search assistant dashboard.
+
+## Tech Stack
+
+| Technology | Version | Purpose |
+|---|---|---|
+| Next.js | 16 | React framework (App Router) |
+| React | 19 | UI library |
+| TypeScript | 5.x | Type safety |
+| Material UI (MUI) | 9.x | Component library |
+| Emotion | 11.x | CSS-in-JS (MUI styling engine) |
+| React Query | 5.x | Server state management |
+| Zustand | 5.x | Client state management |
+| Axios | 1.x | HTTP client |
+| Zod | 4.x | Schema validation |
+
+## Prerequisites
+
+- Node.js 22+
+- pnpm 11+
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install dependencies
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configure environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# .env.local (already created)
+NEXT_PUBLIC_API_URL=http://localhost:8080
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Start development server
 
-## Learn More
+```bash
+pnpm dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open [http://localhost:3000](http://localhost:3000).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/                          # Next.js App Router
+│   ├── layout.tsx                # Root layout (MUI providers)
+│   ├── page.tsx                  # Root redirect (auth check)
+│   ├── globals.css               # Minimal CSS reset
+│   ├── (auth)/                   # Auth route group
+│   │   ├── layout.tsx            # Centered auth layout
+│   │   ├── login/page.tsx        # Login form
+│   │   └── register/page.tsx     # Registration form
+│   ├── (dashboard)/              # Dashboard route group
+│   │   ├── layout.tsx            # AppBar + Drawer + auth guard
+│   │   └── dashboard/page.tsx    # Dashboard home
+│   └── api/
+│       └── health/route.ts       # Frontend health endpoint
+├── lib/
+│   ├── api.ts                    # Axios instance (JWT interceptor)
+│   ├── providers.tsx             # MUI + React Query providers
+│   └── theme.ts                  # MUI theme configuration
+├── store/
+│   └── authStore.ts              # Zustand auth state (token, login, logout)
+└── hooks/
+    └── useHealthCheck.ts         # Backend health polling hook
+```
 
-## Deploy on Vercel
+## Available Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Command | Description |
+|---|---|
+| `pnpm dev` | Start dev server (http://localhost:3000) |
+| `pnpm build` | Production build |
+| `pnpm start` | Start production server |
+| `pnpm lint` | Run ESLint |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## UI Framework
+
+This project uses **Material UI (MUI) v9** with Emotion CSS-in-JS. No Tailwind CSS.
+
+- Theme: `src/lib/theme.ts`
+- Provider: `AppRouterCacheProvider` from `@mui/material-nextjs` for SSR
+- Icons: `@mui/icons-material`
+- Styling: MUI `sx` prop (no className/Tailwind utilities)
+
+## Authentication Flow
+
+1. User registers or logs in → backend returns JWT token
+2. Token stored in Zustand (in-memory, not localStorage)
+3. Axios interceptor attaches `Authorization: Bearer <token>` to every API request
+4. 401 response → auto-logout → redirect to `/login`
+5. Dashboard layout checks `isAuthenticated` → redirects to `/login` if false
+
+## Testing
+
+```bash
+# Run tests
+pnpm vitest
+
+# Run with coverage
+pnpm vitest --coverage
+```
+
+| Type | Framework |
+|---|---|
+| Component tests | Vitest + Testing Library |
+| Property-based | fast-check |
+
+## Docker
+
+```bash
+# Build the image
+docker build -t career-agent-ui .
+
+# Run via Docker Compose (from project root)
+docker compose up career-agent-ui
+```

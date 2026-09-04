@@ -85,3 +85,4 @@ yarn-error.log*
 .vercel
 
 .kiro
+career-agent-service/.jqwik-database

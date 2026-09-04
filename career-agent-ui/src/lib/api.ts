@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useAuthStore } from "@/store/authStore";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080",
@@ -8,10 +9,13 @@ const api = axios.create({
   },
 });
 
-// Request interceptor — placeholder for JWT auth (will be added in auth task)
+// Request interceptor — attach JWT Bearer token from auth store
 api.interceptors.request.use(
   (config) => {
-    // TODO: Attach JWT Bearer token from auth store
+    const token = useAuthStore.getState().token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
@@ -19,11 +23,19 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor — placeholder for error handling
+// Response interceptor — handle 401 by logging out and redirecting to login
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // TODO: Handle 401 (token refresh / redirect to login)
+    if (error.response?.status === 401) {
+      const { logout, isAuthenticated } = useAuthStore.getState();
+      if (isAuthenticated) {
+        logout();
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
+        }
+      }
+    }
     return Promise.reject(error);
   }
 );
