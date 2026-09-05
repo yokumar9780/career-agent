@@ -6,13 +6,13 @@ AI-powered job search assistant that discovers, matches, and helps apply to jobs
 
 ```
 career-agent/
-├── career-agent-service/       # Spring Boot 4.1 backend (Java 25)
-├── career-agent-ui/            # Next.js 16 frontend (TypeScript)
-├── browser-automation-service/ # Playwright service (planned)
-├── docker-compose.yml          # All services + PostgreSQL + Qdrant
-├── scripts/
-│   └── start-local.sh          # One-command local dev startup
-└── .env.example                # Environment variables template
+|-- career-agent-service/       # Spring Boot 4.1 backend (Java 25)
+|-- career-agent-ui/            # Next.js 16 frontend (TypeScript)
+|-- browser-automation-service/ # Playwright service (planned)
+|-- docker-compose.yml          # All services + PostgreSQL + Qdrant
+|-- scripts/
+|   `-- start-local.sh          # One-command local dev startup
+`-- .env.example                # Environment variables template
 ```
 
 | Service | Port | Tech |
@@ -68,8 +68,8 @@ Or use the startup script:
 
 ## Documentation
 
-- **[Implementation Guide](./IMPLEMENTATION_GUIDE.md)** � Step-by-step walkthrough of what we're building and why, with Git branch references.
-- **[Architecture Decision Records](./ARCHITECTURE_DECISIONS.md)** � Key architectural decisions with context, alternatives considered, and rationale (e.g., why email ingestion over LinkedIn API, why browser automation for auto-apply, why Qdrant over pgvector).
+- **[Implementation Guide](./IMPLEMENTATION_GUIDE.md)** - Step-by-step walkthrough of what we're building and why, with Git branch references.
+- **[Architecture Decision Records](./ARCHITECTURE_DECISIONS.md)** - Key architectural decisions with context, alternatives considered, and rationale (e.g., why email ingestion over LinkedIn API, why browser automation for auto-apply, why Qdrant over pgvector).
 
 ## Development
 
