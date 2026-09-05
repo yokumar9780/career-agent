@@ -1,4 +1,4 @@
-﻿# Career Agent - Implementation Guide
+# Career Agent - Implementation Guide
 
 This document walks through the Career Agent project step by step, explaining what we build at each stage and why. Each section represents a milestone that can be tested end-to-end - from the web interface all the way through to the database.
 
@@ -45,7 +45,7 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 - **Error handling** - Clear, consistent error messages for validation failures, wrong passwords, duplicate emails, and other issues.
 - **31 automated tests** - Property-based and unit tests covering password validation rules, JWT token lifecycle, authentication flow, and error response format.
 
-**How to test it:** Open `http://localhost:3000` → you're redirected to the login page. Click "Register" → fill in your details → you land on the dashboard. Log out → log back in with the same credentials. Try a weak password → see a helpful error. Try registering with the same email twice → see "Email already registered."
+**How to test it:** Open `http://localhost:3000` -> you're redirected to the login page. Click "Register" -> fill in your details -> you land on the dashboard. Log out -> log back in with the same credentials. Try a weak password -> see a helpful error. Try registering with the same email twice -> see "Email already registered."
 
 ---
 
@@ -66,7 +66,7 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 - **Vector embedding** - Your profile is converted into a mathematical representation (embedding) and stored in the Qdrant vector database, enabling semantic similarity search later.
 - **OKF knowledge bundle** - Your profile is also saved as a set of structured markdown documents (Open Knowledge Format) that AI agents can read and reason about.
 
-**How to test it:** Log in → go to Profile → upload a PDF CV → see extracted data appear → edit your preferences → save. Navigate away and come back - everything persists. Try uploading a 6th document → rejected. Delete your profile → all data is gone.
+**How to test it:** Log in -> go to Profile -> upload a PDF CV -> see extracted data appear -> edit your preferences -> save. Navigate away and come back - everything persists. Try uploading a 6th document -> rejected. Delete your profile -> all data is gone.
 
 ---
 
@@ -81,13 +81,13 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 **What gets built:**
 - **Job portal abstraction** - A pluggable architecture so we can add more job sources (Indeed, Greenhouse, etc.) later without changing core code. LinkedIn is the first.
 - **LinkedIn email ingestion** - The system connects to your email inbox (IMAP), finds LinkedIn Job Alert emails, parses out job titles, companies, locations, and URLs.
-- **Job storage** - Every job is saved to the database with a status tracking its lifecycle (NEW → ANALYZED → MATCHED → SHORTLISTED → etc.).
+- **Job storage** - Every job is saved to the database with a status tracking its lifecycle (NEW -> ANALYZED -> MATCHED -> SHORTLISTED -> etc.).
 - **Duplicate detection by URL** - If the same job appears in multiple emails, only one record is created.
 - **Job list page** - A table in the frontend showing all ingested jobs with title, company, location, status, and source. Click any job to see its full details.
 - **Pagination** - When you have hundreds of jobs, they're shown page by page (20 per page by default).
 - **Status transition rules** - Jobs can only move through valid status changes (e.g., a NEW job can't jump straight to APPLIED). Invalid transitions are rejected with a clear error.
 
-**How to test it:** Configure your email credentials → trigger the ingestion → see jobs appear in the Jobs list. Click a job to see details. Trigger again → no duplicates created. Check pagination with many jobs.
+**How to test it:** Configure your email credentials -> trigger the ingestion -> see jobs appear in the Jobs list. Click a job to see details. Trigger again -> no duplicates created. Check pagination with many jobs.
 
 ---
 
@@ -102,12 +102,18 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 **What gets built:**
 - **Job Analysis AI Agent** - An AI agent that reads raw job postings and extracts structured data: title, company, location, remote type, salary range, skills, requirements.
 - **Normalization** - Every field is standardized (e.g., remote type becomes REMOTE, HYBRID, ON_SITE, or UNSPECIFIED). Skills are extracted as a clean list. Dates are standardized to ISO 8601.
-- **Semantic deduplication** - Besides exact title+company+location matching, the system uses vector similarity (cosine similarity ≥ 0.95) to flag nearly-identical jobs that might have slightly different wording.
+- **Semantic deduplication** - Besides exact title+company+location matching, the system uses vector similarity (cosine similarity >= 0.95) to flag nearly-identical jobs that might have slightly different wording.
 - **Embedding service** - Each job's description is converted into a vector embedding and stored in Qdrant for similarity search.
 - **OKF concept documents** - Each normalized job is saved as a structured markdown document with provenance (which AI generated it, when, from what source).
 - **LLM resilience** - Rate limiting (30 calls/minute), retry with exponential backoff (3 retries), 120-second timeouts, and a queue of up to 500 pending requests.
 
-**How to test it:** Ingest jobs → see them transition from NEW to ANALYZED on the jobs page. Verify normalized fields display (remote type badges, skill tags). Ingest the same jobs again → verify duplicates are merged, not created.
+**Pipeline progression:**
+```
+Before (Task 4):   ingest -> save (status: NEW)
+After (Task 5):    ingest -> normalize (AI) -> deduplicate -> save (status: ANALYZED)
+```
+
+**How to test it:** Ingest jobs -> see them transition from NEW to ANALYZED on the jobs page. Verify normalized fields display (remote type badges, skill tags). Ingest the same jobs again -> verify duplicates are merged, not created.
 
 ---
 
@@ -128,7 +134,7 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 - **OKF audit trail** - Each match is recorded as an "Attested Computation" in OKF format, documenting exactly how the score was produced (the prompt, the model, the inputs) for full auditability.
 - **Match result display** - The job detail page shows the full breakdown: dimension scores, strengths, gaps, risks, and an overall recommendation.
 
-**How to test it:** Ensure your profile is complete → trigger the workflow → see jobs scored on the jobs page. Click a job → see the full match breakdown. Change the threshold in settings → verify different results.
+**How to test it:** Ensure your profile is complete -> trigger the workflow -> see jobs scored on the jobs page. Click a job -> see the full match breakdown. Change the threshold in settings -> verify different results.
 
 ---
 
@@ -149,7 +155,7 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 - **Empty states** - Clear messaging when no jobs match your filters.
 - **Pagination** - Configurable page size (1-100, default 20).
 
-**How to test it:** Log in → dashboard shows shortlisted jobs ranked by score. Apply filters → list updates. Skip a job → it moves to the skipped tab. Restore it. View the summary counts. Click "View Details" to see the full match result.
+**How to test it:** Log in -> dashboard shows shortlisted jobs ranked by score. Apply filters -> list updates. Skip a job -> it moves to the skipped tab. Restore it. View the summary counts. Click "View Details" to see the full match result.
 
 ---
 
@@ -169,7 +175,7 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 - **Version tracking** - Every edit is saved as a versioned document.
 - **OKF provenance** - Each generated document tracks which AI agent created it and when, updated to "human-reviewed" when you approve.
 
-**How to test it:** From the shortlist → click "Prepare Application" → wait for generation → see CV recommendation, cover letter, screening answers. Edit the cover letter → save → approve. Verify the job status changes to READY_TO_APPLY.
+**How to test it:** From the shortlist -> click "Prepare Application" -> wait for generation -> see CV recommendation, cover letter, screening answers. Edit the cover letter -> save -> approve. Verify the job status changes to READY_TO_APPLY.
 
 ---
 
@@ -182,14 +188,14 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 **Why this matters:** When you're applying to many jobs, it's easy to lose track. This gives you a single view of every application's status, when it was submitted, and what happened.
 
 **What gets built:**
-- **Status lifecycle** - NEW → ANALYZED → MATCHED → SHORTLISTED → APPLICATION_PREPARED → READY_TO_APPLY → APPLIED → INTERVIEW → OFFER → CLOSED. Plus side statuses: REJECTED, SKIPPED, EXPIRED, SUBMISSION_FAILED.
+- **Status lifecycle** - NEW -> ANALYZED -> MATCHED -> SHORTLISTED -> APPLICATION_PREPARED -> READY_TO_APPLY -> APPLIED -> INTERVIEW -> OFFER -> CLOSED. Plus side statuses: REJECTED, SKIPPED, EXPIRED, SUBMISSION_FAILED.
 - **Mark as Applied** - After applying manually, click "Mark as Applied" to record the date and documents used.
-- **Status updates** - Update status as you progress (INTERVIEW → OFFER → ACCEPTED or REJECTED).
+- **Status updates** - Update status as you progress (INTERVIEW -> OFFER -> ACCEPTED or REJECTED).
 - **Tracking view** - Table showing all applications: company, position, applied date, match score, current status, days since last change.
 - **Transition validation** - Can't jump from APPLIED straight to CLOSED. Invalid transitions show which statuses are valid next.
 - **History** - Every status change is timestamped for a complete audit trail.
 
-**How to test it:** Applications page → see tracked applications. Mark a READY_TO_APPLY job as Applied. Update to INTERVIEW → OFFER. Try an invalid transition → see the error with valid options.
+**How to test it:** Applications page -> see tracked applications. Mark a READY_TO_APPLY job as Applied. Update to INTERVIEW -> OFFER. Try an invalid transition -> see the error with valid options.
 
 ---
 
@@ -197,7 +203,7 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 
 **Branch:** `feat/scheduled-workflow`
 
-**What we're doing:** Making the entire pipeline (ingest → normalize → deduplicate → match → shortlist) run automatically on a schedule.
+**What we're doing:** Making the entire pipeline (ingest -> normalize -> deduplicate -> match -> shortlist) run automatically on a schedule.
 
 **Why this matters:** Instead of manually triggering each step, the system runs the complete pipeline every morning at 8:00 AM. You wake up to a fresh shortlist of matched jobs.
 
@@ -208,7 +214,7 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 - **Failure handling** - If one stage fails, the system logs the error, skips that stage, and continues with the rest.
 - **Mutual exclusion** - Only one workflow can run at a time. Clicking "Run Now" while one is running shows "already in progress."
 
-**How to test it:** Workflows page → click "Run Now" → see execution appear as RUNNING → completes with counts. Click again while running → see rejection message. Verify new jobs appear on the shortlist.
+**How to test it:** Workflows page -> click "Run Now" -> see execution appear as RUNNING -> completes with counts. Click again while running -> see rejection message. Verify new jobs appear on the shortlist.
 
 ---
 
@@ -224,9 +230,9 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 - **URL management** - Add, edit, and remove target company career page URLs (up to 50).
 - **Career page scraper** - Fetches and parses job listings from configured URLs.
 - **URL validation** - Must be HTTPS, valid URL format, max 2048 characters.
-- **Integration with pipeline** - Scraped jobs flow through the same normalize → deduplicate → match pipeline as LinkedIn jobs.
+- **Integration with pipeline** - Scraped jobs flow through the same normalize -> deduplicate -> match pipeline as LinkedIn jobs.
 
-**How to test it:** Settings → add a career page URL (try HTTP → rejected, HTTPS → accepted). Trigger workflow → see jobs from career pages appear. Add an invalid URL → validation error. Try adding a 51st → rejected.
+**How to test it:** Settings -> add a career page URL (try HTTP -> rejected, HTTPS -> accepted). Trigger workflow -> see jobs from career pages appear. Add an invalid URL -> validation error. Try adding a 51st -> rejected.
 
 ---
 
@@ -244,7 +250,7 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 - **Pre-submit review toggle** - When auto-applying, choose whether to review the filled form before submission.
 - **Match score threshold** - Adjustable slider (1-100) for the minimum match score to shortlist.
 
-**How to test it:** Settings → toggle to AUTO_APPLY → save. Override a specific job to MANUAL. Change threshold → verify different shortlist results.
+**How to test it:** Settings -> toggle to AUTO_APPLY -> save. Override a specific job to MANUAL. Change threshold -> verify different shortlist results.
 
 ---
 
@@ -262,7 +268,7 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 - **Rate limiting** - Maximum 10 submissions per hour, 30 per day to avoid account restrictions.
 - **Health endpoint** - Reports service status, browser state, and submission counts.
 
-**How to test it:** Start the service → hit `http://localhost:4000/health` → see status, browser state, submission counts.
+**How to test it:** Start the service -> hit `http://localhost:4000/health` -> see status, browser state, submission counts.
 
 ---
 
@@ -275,13 +281,13 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 **Why this matters:** The browser automation needs to be logged into LinkedIn to submit applications. This step handles authentication securely - we never store your password, only the session cookies, and those are encrypted.
 
 **What gets built:**
-- **Browser-based login** - Click "Connect LinkedIn" → a browser opens → you log in normally → session is captured and encrypted.
+- **Browser-based login** - Click "Connect LinkedIn" -> a browser opens -> you log in normally -> session is captured and encrypted.
 - **AES-256 encryption** - Session cookies are encrypted at rest.
 - **30-day TTL** - Sessions auto-expire after 30 days, requiring re-authentication.
 - **Session validation** - Before each submission, the session is verified against LinkedIn.
 - **Disconnect** - Revoke access with one click (deletes encrypted data within 5 seconds).
 
-**How to test it:** Settings → click "Connect LinkedIn" → login page opens → enter credentials → see "Connected" with expiry date. Click "Disconnect" → status returns to disconnected.
+**How to test it:** Settings -> click "Connect LinkedIn" -> login page opens -> enter credentials -> see "Connected" with expiry date. Click "Disconnect" -> status returns to disconnected.
 
 ---
 
@@ -301,7 +307,7 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 - **External redirect fallback** - Jobs that redirect to external sites fall back to MANUAL mode.
 - **Success/failure detection** - Confirms submission via LinkedIn's confirmation page.
 
-**How to test it:** Set AUTO_APPLY mode → connect LinkedIn → approve an application → see status update to APPLIED (or SUBMISSION_FAILED with screenshot).
+**How to test it:** Set AUTO_APPLY mode -> connect LinkedIn -> approve an application -> see status update to APPLIED (or SUBMISSION_FAILED with screenshot).
 
 ---
 
@@ -320,7 +326,7 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 - **24-hour timeout** - If you don't respond within 24 hours, the submission is cancelled.
 - **Notification badge** - Dashboard shows how many applications are waiting for your review.
 
-**How to test it:** Enable Pre-Submit Review → approve an application → see notification badge → review the summary with screenshot → approve to submit (or reject to edit).
+**How to test it:** Enable Pre-Submit Review -> approve an application -> see notification badge -> review the summary with screenshot -> approve to submit (or reject to edit).
 
 ---
 
@@ -339,7 +345,7 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 - **Attempt history** - Every submission attempt recorded with timestamp, result, and failure reason.
 - **Switch to manual** - After max retries, prompted to switch to manual application.
 
-**How to test it:** Trigger auto-apply on a job. If it fails, see SUBMISSION_FAILED with screenshot. Click "Retry" → see attempt count. After 3 failures, "Switch to Manual" appears.
+**How to test it:** Trigger auto-apply on a job. If it fails, see SUBMISSION_FAILED with screenshot. Click "Retry" -> see attempt count. After 3 failures, "Switch to Manual" appears.
 
 ---
 
@@ -358,7 +364,7 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 - **Metrics** - `/actuator/metrics` reports jobs ingested, matched, applications prepared, LLM call counts.
 - **Input validation hardening** - All endpoints verified for proper validation, consistent error format, no internal details leaked in 500 errors.
 
-**How to test it:** Make API calls → check structured logs. Hit `/actuator/health` → see dependency statuses. Send malformed JSON → get consistent 400 error.
+**How to test it:** Make API calls -> check structured logs. Hit `/actuator/health` -> see dependency statuses. Send malformed JSON -> get consistent 400 error.
 
 ---
 
@@ -377,7 +383,7 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 - **Complete Docker Compose** - All 5 services (PostgreSQL, Qdrant, backend, frontend, browser automation) with health checks, dependency ordering, and named volumes.
 - **Documentation** - `.env.example` with all variables, README with setup instructions.
 
-**How to test it:** Run `docker compose up` → wait for health checks → open `http://localhost:3000` → register, login, browse dashboard. Everything works end-to-end through Docker.
+**How to test it:** Run `docker compose up` -> wait for health checks -> open `http://localhost:3000` -> register, login, browse dashboard. Everything works end-to-end through Docker.
 
 ---
 
@@ -385,22 +391,22 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 
 | Step | What | Branch | Status |
 |---|---|---|---|
-| 1 | Project Foundation | `feat/project-scaffold-health-check` | ✅ Complete |
-| 2 | User Accounts | `feat/user-auth-registration-login` | ✅ Complete |
-| 3 | Candidate Profile | `feat/candidate-profile-crud` | ✅ Complete |
-| 4 | Job Discovery | `feat/job-portal-linkedin-ingestion` | ✅ Complete |
-| 5 | Normalization & Dedup | `feat/job-normalization-dedup` | ⬜ Planned |
-| 6 | AI Matching | `feat/ai-job-matching` | ⬜ Planned |
-| 7 | Shortlist Dashboard | `feat/shortlist-dashboard` | ⬜ Planned |
-| 8 | Application Preparation | `feat/application-package-prep` | ⬜ Planned |
-| 9 | Application Tracking | `feat/application-tracking` | ⬜ Planned |
-| 10 | Automated Workflow | `feat/scheduled-workflow` | ⬜ Planned |
-| 11 | Company Career Pages | `feat/career-page-ingestion` | ⬜ Planned |
-| 12 | Application Mode Config | `feat/application-mode-config` | ⬜ Planned |
-| 13 | Browser Automation | `feat/browser-automation-service` | ⬜ Planned |
-| 14 | Session Management | `feat/portal-session-management` | ⬜ Planned |
-| 15 | LinkedIn Auto-Apply | `feat/linkedin-auto-apply` | ⬜ Planned |
-| 16 | Pre-Submit Review | `feat/pre-submit-review` | ⬜ Planned |
-| 17 | Retry & Failure Handling | `feat/submission-result-retry` | ⬜ Planned |
-| 18 | Observability | `feat/observability-production` | ⬜ Planned |
-| 19 | Docker Deployment | `feat/docker-deployment` | ⬜ Planned |
+| 1 | Project Foundation | `feat/project-scaffold-health-check` | Complete |
+| 2 | User Accounts | `feat/user-auth-registration-login` | Complete |
+| 3 | Candidate Profile | `feat/candidate-profile-crud` | Complete |
+| 4 | Job Discovery | `feat/job-portal-linkedin-ingestion` | Complete |
+| 5 | Normalization & Dedup | `feat/job-normalization-dedup` | Planned |
+| 6 | AI Matching | `feat/ai-job-matching` | Planned |
+| 7 | Shortlist Dashboard | `feat/shortlist-dashboard` | Planned |
+| 8 | Application Preparation | `feat/application-package-prep` | Planned |
+| 9 | Application Tracking | `feat/application-tracking` | Planned |
+| 10 | Automated Workflow | `feat/scheduled-workflow` | Planned |
+| 11 | Company Career Pages | `feat/career-page-ingestion` | Planned |
+| 12 | Application Mode Config | `feat/application-mode-config` | Planned |
+| 13 | Browser Automation | `feat/browser-automation-service` | Planned |
+| 14 | Session Management | `feat/portal-session-management` | Planned |
+| 15 | LinkedIn Auto-Apply | `feat/linkedin-auto-apply` | Planned |
+| 16 | Pre-Submit Review | `feat/pre-submit-review` | Planned |
+| 17 | Retry & Failure Handling | `feat/submission-result-retry` | Planned |
+| 18 | Observability | `feat/observability-production` | Planned |
+| 19 | Docker Deployment | `feat/docker-deployment` | Planned |
