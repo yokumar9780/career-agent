@@ -1,4 +1,4 @@
-# Career Agent
+﻿# Career Agent
 
 AI-powered job search assistant that discovers, matches, and helps apply to jobs across multiple portals.
 
@@ -79,4 +79,4 @@ See individual project READMEs:
 
 ## License
 
-Private — not open source.
+Private - not open source.

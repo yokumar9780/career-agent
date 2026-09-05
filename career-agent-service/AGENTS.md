@@ -1,16 +1,16 @@
-# Career Agent Service â€” Development Rules
+﻿# Career Agent Service - Development Rules
 
 These rules apply to ALL code changes in the backend service. Follow them in every session without exception.
 
 ## Architecture Rules
 
-1. **Always follow the layered architecture: Controller â†’ Service â†’ Repository.** Never bypass the service layer. Controllers must NOT directly call repositories. Business logic lives in services, not controllers.
+1. **Always follow the layered architecture: Controller → Service → Repository.** Never bypass the service layer. Controllers must NOT directly call repositories. Business logic lives in services, not controllers.
 
 2. **Controllers** handle HTTP concerns only: request validation, response mapping, status codes. No business logic.
 
 3. **Services** contain all business logic, transaction management, and orchestration. They call repositories and other services.
 
-4. **Repositories** are Spring Data JPA interfaces only. No custom SQL in controllers or services â€” use repository methods or `@Query`.
+4. **Repositories** are Spring Data JPA interfaces only. No custom SQL in controllers or services - use repository methods or `@Query`.
 
 ## Lombok Rules
 
@@ -22,7 +22,7 @@ These rules apply to ALL code changes in the backend service. Follow them in eve
 
 8. **Use `@Builder`** on JPA entities with `@NoArgsConstructor` and `@AllArgsConstructor`.
 
-9. **Do NOT use `@Data`** on JPA entities â€” it generates `equals`/`hashCode` based on all fields which causes Hibernate issues. Use `@Getter @Setter` instead.
+9. **Do NOT use `@Data`** on JPA entities - it generates `equals`/`hashCode` based on all fields which causes Hibernate issues. Use `@Getter @Setter` instead.
 
 10. **Exception:** Classes that need `@Value` annotation on constructor parameters (e.g., reading from `application.yml`) must keep explicit constructors. `@RequiredArgsConstructor` does not support `@Value` params.
 
@@ -38,7 +38,7 @@ These rules apply to ALL code changes in the backend service. Follow them in eve
 
 ## Code Style
 
-15. **Use Java records** for all DTOs (request/response objects). No Lombok on DTOs â€” records are cleaner.
+15. **Use Java records** for all DTOs (request/response objects). No Lombok on DTOs - records are cleaner.
 
 16. **Use enums** for fixed value sets (status, type, preference). Store as `@Enumerated(EnumType.STRING)` in JPA.
 
@@ -52,7 +52,7 @@ These rules apply to ALL code changes in the backend service. Follow them in eve
 
 20. **Use lambda expressions** and functional programming style (streams, Optional, method references) wherever they improve readability. Prefer `list.stream().map(...).toList()` over manual loops, `Optional.map()` over null checks, and `forEach` over indexed iteration.
 
-21. **Use the latest Java APIs** available in Java 25: records, sealed classes, pattern matching (`instanceof` with binding), switch expressions, text blocks, `List.of()`, `Map.of()`, `Stream.toList()`, virtual threads where applicable. Avoid deprecated or legacy APIs (`Vector`, `Hashtable`, `Date`/`Calendar` — use `java.time` instead).
+21. **Use the latest Java APIs** available in Java 25: records, sealed classes, pattern matching (`instanceof` with binding), switch expressions, text blocks, `List.of()`, `Map.of()`, `Stream.toList()`, virtual threads where applicable. Avoid deprecated or legacy APIs (`Vector`, `Hashtable`, `Date`/`Calendar` - use `java.time` instead).
 
 22. **Use the latest Spring Boot 4.1 and Spring Framework 7 features**: constructor injection via `@RequiredArgsConstructor`, `@HttpExchange` for declarative HTTP clients, `RestClient` over `RestTemplate`, Spring AI 2.0.1 ChatClient builder pattern, and `@ConfigurationProperties` with records where possible.
 
@@ -82,14 +82,14 @@ These rules apply to ALL code changes in the backend service. Follow them in eve
 
 ```
 com.careeragent/
-â”œâ”€â”€ api/              # Controllers, DTOs, exceptions, GlobalExceptionHandler
-â”œâ”€â”€ service/          # Business logic services
-â”œâ”€â”€ domain/           # JPA entities, enums
-â”œâ”€â”€ repository/       # Spring Data JPA repositories
-â”œâ”€â”€ infrastructure/   # Security, config, observability, LLM
-â”œâ”€â”€ integration/      # External systems (storage, portal, email, browser, vector, okf)
-â”œâ”€â”€ agent/            # AI agents (profile, matching, job analysis, application)
-â”œâ”€â”€ workflow/         # Workflow engine
-â”œâ”€â”€ scheduler/        # Scheduled tasks
-â””â”€â”€ tool/             # Spring AI tools
+├── api/              # Controllers, DTOs, exceptions, GlobalExceptionHandler
+├── service/          # Business logic services
+├── domain/           # JPA entities, enums
+├── repository/       # Spring Data JPA repositories
+├── infrastructure/   # Security, config, observability, LLM
+├── integration/      # External systems (storage, portal, email, browser, vector, okf)
+├── agent/            # AI agents (profile, matching, job analysis, application)
+├── workflow/         # Workflow engine
+├── scheduler/        # Scheduled tasks
+└── tool/             # Spring AI tools
 ```

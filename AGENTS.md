@@ -1,4 +1,4 @@
-# Career Agent — Project-Wide Rules
+﻿# Career Agent - Project-Wide Rules
 
 These rules apply across all sub-projects in this monorepo.
 

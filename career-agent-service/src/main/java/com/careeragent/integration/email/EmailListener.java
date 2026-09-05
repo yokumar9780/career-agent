@@ -45,7 +45,7 @@ public class EmailListener {
      */
     public List<FetchedEmail> fetchAndExtractEmails() {
         if (mailHost == null || mailHost.isBlank()) {
-            log.warn("Mail host is not configured â€” skipping email fetch");
+            log.warn("Mail host is not configured — skipping email fetch");
             return Collections.emptyList();
         }
 

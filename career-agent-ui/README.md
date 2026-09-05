@@ -1,6 +1,6 @@
-# Career Agent UI
+﻿# Career Agent UI
 
-Next.js frontend for the Career Agent — an AI-powered job search assistant dashboard.
+Next.js frontend for the Career Agent - an AI-powered job search assistant dashboard.
 
 ## Tech Stack
 

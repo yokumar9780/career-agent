@@ -1,6 +1,6 @@
-# Career Agent Service
+﻿# Career Agent Service
 
-Spring Boot backend for the Career Agent — an AI-powered job search assistant that discovers, matches, and helps apply to jobs.
+Spring Boot backend for the Career Agent - an AI-powered job search assistant that discovers, matches, and helps apply to jobs.
 
 ## Tech Stack
 
