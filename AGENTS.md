@@ -18,6 +18,7 @@ These rules apply across all sub-projects in this monorepo.
    - `requirements.md`, `design.md`, `tasks.md` (in `.kiro/specs/career-agent/`)
    - `README.md` files (root, backend, frontend)
    - `IMPLEMENTATION_GUIDE.md`
+   - `ARCHITECTURE_DECISIONS.md`
    - `.env.example`
 
 5. **Keep the Implementation Guide in sync** with completed tasks (update status column).

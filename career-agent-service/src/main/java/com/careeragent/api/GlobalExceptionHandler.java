@@ -159,6 +159,24 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles illegal state transitions (e.g., invalid job status changes).
+     */
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalState(IllegalStateException ex,
+                                                            HttpServletRequest request) {
+        ErrorResponse body = new ErrorResponse(
+                Instant.now(),
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI(),
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
+
+    /**
      * Handles illegal argument exceptions (e.g., invalid enum values).
      */
     @ExceptionHandler(IllegalArgumentException.class)

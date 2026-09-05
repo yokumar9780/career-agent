@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -125,7 +125,7 @@ public class MinioStorageService implements ObjectStorageService {
                             .recursive(true)
                             .build());
 
-            List<DeleteObject> toDelete = new LinkedList<>();
+            List<DeleteObject> toDelete = new ArrayList<>();
             for (Result<Item> result : objects) {
                 toDelete.add(new DeleteObject(result.get().objectName()));
             }

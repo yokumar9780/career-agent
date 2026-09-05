@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import { useAuthStore } from "@/store/authStore";
 import api from "@/lib/api";
 import type { AxiosError } from "axios";
+import type { AuthResponse, ApiErrorResponse } from "@/types/auth";
 
 interface LoginFormData {
   email: string;
@@ -23,17 +24,6 @@ interface LoginFormData {
 interface FormErrors {
   email?: string;
   password?: string;
-}
-
-interface AuthResponse {
-  accessToken: string;
-  expiresIn: number;
-}
-
-interface ApiErrorResponse {
-  message?: string;
-  error?: string;
-  status?: number;
 }
 
 function validateForm(data: LoginFormData): FormErrors {

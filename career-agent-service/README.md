@@ -69,6 +69,28 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 
 All `/api/v1/*` endpoints (except auth) require a valid JWT token.
 
+### Jobs (require auth)
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/v1/jobs` | List jobs (paginated, filterable by status) |
+| GET | `/api/v1/jobs/{id}` | Job detail |
+| PUT | `/api/v1/jobs/{id}/status` | Update job status |
+| POST | `/api/v1/jobs/ingest` | Trigger manual job ingestion (async) |
+
+### Profile & Documents (require auth)
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/v1/profiles/me` | Get candidate profile |
+| PUT | `/api/v1/profiles/me` | Update profile |
+| GET | `/api/v1/profiles/me/preferences` | Get preferences |
+| PUT | `/api/v1/profiles/me/preferences` | Update preferences |
+| DELETE | `/api/v1/profiles/me` | Delete profile (cascade) |
+| POST | `/api/v1/profiles/me/documents` | Upload document |
+| GET | `/api/v1/profiles/me/documents` | List documents |
+| DELETE | `/api/v1/profiles/me/documents/{id}` | Delete document |
+
 ## Project Structure
 
 ```
@@ -100,7 +122,10 @@ src/main/java/com/careeragent/
 │   ├── ProfileService.java
 │   ├── DocumentService.java
 │   ├── ValidationService.java
-│   └── TextExtractionService.java
+│   ├── TextExtractionService.java
+│   ├── JobService.java
+│   ├── JobIngestionService.java
+│   └── JobStatusService.java
 ├── agent/                          # AI agents (profile, matching, etc.)
 ├── workflow/                       # Workflow engine
 ├── scheduler/                      # Scheduled tasks
@@ -114,7 +139,8 @@ src/main/resources/
 │   ├── V2__candidate_profile.sql
 │   ├── V3__candidate_preference_and_document.sql
 │   ├── V4__fix_content_type_length.sql
-│   └── V5__multi_value_remote_and_seniority.sql
+│   ├── V5__multi_value_remote_and_seniority.sql
+│   └── V6__job_and_workflow.sql
 └── prompts/                        # AI agent system prompts (OKF format)
 ```
 
@@ -141,6 +167,11 @@ Key variables:
 | `MINIO_BUCKET_NAME` | `career-agent-documents` | Storage bucket name |
 | `QDRANT_HOST` | `localhost` | Qdrant host |
 | `QDRANT_GRPC_PORT` | `6334` | Qdrant gRPC port |
+| `EMAIL_INGESTION_ENABLED` | `false` | Enable LinkedIn email ingestion |
+| `EMAIL_INGESTION_FOLDER` | `INBOX` | Email folder to read |
+| `EMAIL_INGESTION_MAX_EMAILS` | `10` | Max emails per ingestion run |
+| `EMAIL_INGESTION_LOOKBACK_DAYS` | `7` | Only process emails from last N days |
+| `EMAIL_LINKEDIN_SENDER` | `jobalerts-noreply@linkedin.com` | LinkedIn alert sender address |
 
 ## Database Migrations
 
@@ -173,6 +204,8 @@ mvn test -Dtest=JwtTokenProviderTest -Dsurefire.useFile=false
 |---|---|---|
 | Property-based | jqwik 1.9.2 | `*PropertyTest.java` |
 | Unit | JUnit 5 + Mockito | `*Test.java` |
+
+**Current test count:** 121 tests across property-based and unit test suites.
 
 ## Profiles
 

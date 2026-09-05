@@ -33,7 +33,7 @@ spring:
           temperature: 0.3
 
   mail:
-    host: ${MAIL_HOST:}
+    host: ${MAIL_HOST:imap.gmail.com}
     port: ${MAIL_PORT:993}
     username: ${MAIL_USERNAME:}
     password: ${MAIL_PASSWORD:}
@@ -94,6 +94,15 @@ minio:
   access-key: ${MINIO_ACCESS_KEY:minioadmin}
   secret-key: ${MINIO_SECRET_KEY:minioadmin}
   bucket-name: ${MINIO_BUCKET_NAME:career-agent-documents}
+
+# Email ingestion settings
+email:
+  ingestion:
+    enabled: ${EMAIL_INGESTION_ENABLED:true}
+    folder: ${EMAIL_INGESTION_FOLDER:INBOX}
+    max-emails-per-run: ${EMAIL_INGESTION_MAX_EMAILS:10}
+    linkedin-alert-sender: ${EMAIL_LINKEDIN_SENDER:jobalerts-noreply@linkedin.com}
+    lookback-days: ${EMAIL_INGESTION_LOOKBACK_DAYS:7}
 
 logging:
   level:

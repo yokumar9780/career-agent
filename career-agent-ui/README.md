@@ -48,27 +48,45 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ```
 src/
-├── app/                          # Next.js App Router
+├── app/
 │   ├── layout.tsx                # Root layout (MUI providers)
 │   ├── page.tsx                  # Root redirect (auth check)
 │   ├── globals.css               # Minimal CSS reset
-│   ├── (auth)/                   # Auth route group
+│   ├── (auth)/
 │   │   ├── layout.tsx            # Centered auth layout
 │   │   ├── login/page.tsx        # Login form
 │   │   └── register/page.tsx     # Registration form
-│   ├── (dashboard)/              # Dashboard route group
+│   ├── (dashboard)/
 │   │   ├── layout.tsx            # AppBar + Drawer + auth guard
-│   │   └── dashboard/page.tsx    # Dashboard home
+│   │   ├── loading.tsx           # Route-level loading skeleton
+│   │   ├── error.tsx             # Error boundary (uses retry)
+│   │   ├── dashboard/page.tsx    # Dashboard home (Server Component)
+│   │   ├── jobs/
+│   │   │   ├── page.tsx          # Jobs list with table, pagination, filters
+│   │   │   ├── loading.tsx       # Jobs loading skeleton
+│   │   │   └── [id]/
+│   │   │       ├── page.tsx      # Job detail view
+│   │   │       └── loading.tsx   # Job detail loading skeleton
+│   │   └── profile/page.tsx      # Profile management (3 tabs)
 │   └── api/
-│       └── health/route.ts       # Frontend health endpoint
+│       └── health/route.ts       # Health endpoint (Web API Response.json)
+├── components/                   # Reusable MUI components
+├── hooks/
+│   ├── useProfile.ts             # Profile/preferences/document hooks
+│   └── useJobs.ts                # Job list/detail/ingestion hooks
 ├── lib/
 │   ├── api.ts                    # Axios instance (JWT interceptor)
 │   ├── providers.tsx             # MUI + React Query providers
-│   └── theme.ts                  # MUI theme configuration
+│   ├── theme.ts                  # MUI theme configuration
+│   ├── errorUtils.ts             # Shared error message extraction
+│   └── jobConstants.ts           # Job status colors and status list
 ├── store/
-│   └── authStore.ts              # Zustand auth state (token, login, logout)
-└── hooks/
-    └── useHealthCheck.ts         # Backend health polling hook
+│   └── authStore.ts              # Zustand auth state
+└── types/
+    ├── auth.ts                   # Auth response/error types
+    ├── common.ts                 # Shared API error types
+    ├── profile.ts                # Profile/preference/document types
+    └── job.ts                    # Job/ingestion response types
 ```
 
 ## Available Scripts

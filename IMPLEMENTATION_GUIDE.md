@@ -387,8 +387,8 @@ For the reasoning behind key architectural choices (why email over LinkedIn API,
 |---|---|---|---|
 | 1 | Project Foundation | `feat/project-scaffold-health-check` | ✅ Complete |
 | 2 | User Accounts | `feat/user-auth-registration-login` | ✅ Complete |
-| 3 | Candidate Profile | `feat/candidate-profile-crud` | ⬜ Planned |
-| 4 | Job Discovery | `feat/job-portal-linkedin-ingestion` | ⬜ Planned |
+| 3 | Candidate Profile | `feat/candidate-profile-crud` | ✅ Complete |
+| 4 | Job Discovery | `feat/job-portal-linkedin-ingestion` | ✅ Complete |
 | 5 | Normalization & Dedup | `feat/job-normalization-dedup` | ⬜ Planned |
 | 6 | AI Matching | `feat/ai-job-matching` | ⬜ Planned |
 | 7 | Shortlist Dashboard | `feat/shortlist-dashboard` | ⬜ Planned |

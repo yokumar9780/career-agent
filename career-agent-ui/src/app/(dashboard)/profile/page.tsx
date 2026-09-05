@@ -32,7 +32,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import WarningIcon from "@mui/icons-material/Warning";
 import type { SyntheticEvent } from "react";
-import type { AxiosError } from "axios";
 import {
   useProfile,
   useUpdateProfile,
@@ -42,6 +41,7 @@ import {
   useUploadDocument,
   useDeleteDocument,
 } from "@/hooks/useProfile";
+import { extractErrorMessage } from "@/lib/errorUtils";
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
@@ -75,20 +75,6 @@ function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-interface ApiErrorBody {
-  message?: string;
-  error?: string;
-}
-
-function extractErrorMessage(err: unknown): string {
-  const axiosErr = err as AxiosError<ApiErrorBody>;
-  return (
-    axiosErr.response?.data?.message ??
-    axiosErr.response?.data?.error ??
-    "An unexpected error occurred"
-  );
 }
 
 const REMOTE_OPTIONS = ["REMOTE", "HYBRID", "ON_SITE", "ANY"] as const;
